@@ -1,0 +1,67 @@
+
+
+.home{
+  margin-left: 250px;
+}
+
+.side-menu{
+  position: fixed;
+  background-color: black;
+  width: 250px;
+  height:100%;
+  box-sizing: border-box;
+  padding: 30px 20px;
+}
+
+.side-menu.inactive{
+  width: 80px;
+}
+
+.side-menu .top-section{
+  position:relative;
+}
+
+.side-menu .top-section .toggle-btn{
+  position:absolute;
+  font-size: 30px;
+  right: 0px;
+  color: #ffffff;
+
+}
+
+.side-menu .main-menu .menu-item{
+  text-decoration: none;
+  font-size: 15px;
+  display: block;
+  color: #ffffff;
+  position: relative;
+  top: 70px;
+  cursor: pointer;
+}
+
+.add{
+  margin-left: 250px;
+}
+
+.list{
+  margin-left: 250px;
+}
+
+.show{
+  margin-left: 250px;
+}
+
+.list .items{
+  text-decoration: none;
+  font-size: 17px;
+  display: block;
+  color: #000000;
+  cursor: pointer;
+  
+}
+
+.edit{
+  margin-left: 250px;
+}
+
+

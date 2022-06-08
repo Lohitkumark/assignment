@@ -13,18 +13,24 @@ import ClientShow from '../clients/ClientShow'
 import ClientEdit from '../clients/ClientEdit'
 import ClientAdd from '../clients/ClientAdd'
 import ClientList from '../clients/ClientList'
-import PrivateRoute from '../../app/PrivateRoute'
+import PrivateRoute from '../Private/PrivateRoute'
+import Swal from 'sweetalert2'
 
 
 const Navigation = (props) => {
 
   const {userLoggedIn, handleAuth} = props
   const dispatch = useDispatch()
+
+  // useEffect(()=>{
+  //   dispatch(listAdmin(0))
+  // },[])
  
   return (
     <div>
       <Navbar bg='secondary' variant='dark' sticky="top">
         <Container fluid>
+          <Navbar.Brand><h2>Assignment App</h2></Navbar.Brand>
           <Navbar.Collapse className="justify-content-end">
             <Nav className='justify-content-end' href='/'>
                 {userLoggedIn ? (
@@ -32,9 +38,22 @@ const Navigation = (props) => {
                     <Nav.Item>
                       <Nav.Link eventkey='1' as={Link} to={'/'}
                       onClick={()=>{
-                        localStorage.removeItem('token')
-                        props.history.push('/')
-                        handleAuth()
+                        Swal.fire({
+                          title: "Are You Sure?",
+                          text:"You will be logged out",
+                          icon:"warning",
+                          showCancelButton:true,
+                          confirmButtonColor :"#3085d6",
+                          cancelButtonColor:"#d33",
+                          confirmButtonText:"Yes, Logout"
+                        }).then((result)=>{
+                          if(result.isConfirmed){
+                            localStorage.removeItem('token')
+                            Swal.fire("Successfully logged out")
+                            props.history.push('/')
+                            handleAuth()
+                          }
+                        })
                       }}>
                        <Button size='sm'>Logout</Button>
                       </Nav.Link>

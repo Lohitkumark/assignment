@@ -1,9 +1,8 @@
-import React,{useEffect, useState} from "react";
-import { Card, Container, Row, Col, ListGroup, Button } from "react-bootstrap";
+import React,{useEffect} from "react";
+import { Card, Container, ListGroup, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { Form } from "react-bootstrap";
-import { Link, Route } from "react-router-dom";
 import { deleteAdmin, editAdmin, showAdmin } from "./admin";
+import Swal from "sweetalert2";
 
 const AdminShow = (props) => {
 
@@ -20,20 +19,26 @@ const AdminShow = (props) => {
   },[id])
 
   const handleDelete=(id)=>{
+    Swal.fire({
+      title: "Are You Sure?",
+      text:"Your data will be deleted",
+      icon:"warning",
+      showCancelButton:true,
+      confirmButtonColor :"#3085d6",
+      cancelButtonColor:"#d33",
+      confirmButtonText:"Delete"
+    }).then((result)=>{
+      if(result.isConfirmed){
+        Swal.fire("Successfully deleted")
     const values={
       id,
       props
     }
     console.log(id);
     dispatch(deleteAdmin(values))
-
   }
-
-  const handleEdit = (id) => {
-    // props.history.push(`/S/${id}AdminEdit`)
-    // console.log(id);
+})
   }
-
   const handleClick =() => {
     props.history.push("/admins/list")
   }

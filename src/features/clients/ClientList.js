@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Form, Card, Container, ListGroup, Button } from "react-bootstrap";
+import { Form, Card, Container, ListGroup, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, Route } from "react-router-dom";
-import { filterClients, listClient } from "./clients";
+import { Link} from "react-router-dom";
+import { filterClients, listClient, resetClients } from "./clients";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const ClientList = (props) => {
@@ -15,7 +15,7 @@ const ClientList = (props) => {
     return state.client.data;
   });
 
-  console.log(listClients);
+  // console.log(listClients);
 
   const filter = useSelector((state) => {
     return state.client.filter
@@ -26,10 +26,12 @@ const ClientList = (props) => {
   })
 
   useEffect(()=>{
-    if(hasNext){
+    dispatch(resetClients())
+  },[])
+
+  useEffect(()=>{
       dispatch(listClient(pageNumber))
-    }
-  },[hasNext, pageNumber])
+  },[ pageNumber])
  
   const fetchData = () => {
     if(hasNext){
@@ -71,7 +73,7 @@ const ClientList = (props) => {
                 dataLength={listClients.length}
                 next={fetchData}
                 hasMore={hasNext}
-                loader={<h4>Loading...</h4>}
+                loader={<Spinner animation="border" variant="primary" />}
                 endMessage={
                   <p style={{ textAlign: "center" }}>
                     <b>No More Records</b>

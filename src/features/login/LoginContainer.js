@@ -8,8 +8,8 @@ const LoginContainer = (props) => {
     <div>
       <Container className="col-md-4 mt-2">
         <Card>
-          <Card.Header>
-            <h1>Login</h1>
+          <Card.Header style={{textAlign:'center'}}>
+            <h1>LOGIN</h1>
           </Card.Header>
           <Card.Body>
             <LoginForm {...props} />

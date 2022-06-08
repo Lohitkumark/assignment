@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Container } from "react-bootstrap";
+import { Card} from "react-bootstrap";
 import ClientForm from "./ClientForm";
 import { useDispatch } from "react-redux";
 import { createClient } from "./clients";
@@ -16,7 +16,7 @@ const ClientAdd = (props) => {
 
   return (
     <div className="add">
-        <Card className="mt-4">
+        <Card className="mt-4 mb-4">
           <Card.Header style={{textAlign:'center'}}>
             <h1>CREATE CLIENT</h1>
           </Card.Header>

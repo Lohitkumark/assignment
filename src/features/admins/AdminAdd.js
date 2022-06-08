@@ -6,7 +6,7 @@ const AdminAdd = (props) => {
 
   return (
     <div className="add">
-        <Card className="mt-4">
+        <Card className="mt-4 mb-4">
           <Card.Header style={{textAlign:'center'}}>
             <h1 >CREATE ADMIN</h1>
           </Card.Header>

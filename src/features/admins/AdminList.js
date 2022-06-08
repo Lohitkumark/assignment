@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Card, Container, ListGroup, Button, Form } from "react-bootstrap";
+import React, { useEffect,  useState } from "react";
+import { Card, Container, ListGroup,  Form, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { filterAdmins, listAdmin } from "./admin";
+import { filterAdmins, listAdmin, resetAdmins } from "./admin";
+
 
 const AdminList = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
@@ -14,7 +15,7 @@ const AdminList = (props) => {
   const listAdmins = useSelector((state) => {
     return state.admin.data
   });
-
+  
   const filter = useSelector((state) => {
     return state.admin.filter
   });
@@ -23,13 +24,16 @@ const AdminList = (props) => {
     return state.admin.hasNext
   })
 
-  // console.log(data);
+  // console.log(listAdmins)
 
   useEffect(()=>{
-    if(hasNext){
-      dispatch(listAdmin(pageNumber))
-    }
-  },[hasNext, pageNumber])
+    dispatch(resetAdmins())
+  },[])
+
+  useEffect(()=>{
+    dispatch(listAdmin(pageNumber))
+  },[pageNumber])
+
  
   const fetchData = () => {
     if(hasNext){
@@ -64,7 +68,7 @@ const AdminList = (props) => {
                 dataLength={listAdmins.length} 
                 next={fetchData}
                 hasMore={hasNext}
-                loader={<h4>Loading...</h4>}
+                loader={<Spinner animation="border" variant="primary" />}
                 endMessage={
                   <p style={{ textAlign: "center" }}>
                     <b>No More Records</b>

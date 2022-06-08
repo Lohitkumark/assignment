@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from '../../app/axios'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export const createAdmin = createAsyncThunk('post/createAdmin', async (values, { rejectWithValue }) => {
     const token = localStorage.getItem('token')
     const {formData, onSubmitProps, props} = values
     console.log('create',formData);
     try {
-        const res = await axios.post('/v1/admins', formData, {
+        const res = await axios.post(`${process.env.React_App_base_url}/admins`, formData, {
         headers:{
             Authorization : token
         }
@@ -15,6 +16,7 @@ export const createAdmin = createAsyncThunk('post/createAdmin', async (values, {
         props.history.push('/AdminList')
     return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -26,7 +28,7 @@ export const listAdmin = createAsyncThunk('get/listAdmin', async (value,{ reject
     const token = localStorage.getItem('token')
     // console.log(value);
     try {
-        const res = await axios.get(`/admins?page=${value}&limit=10`, {
+        const res = await axios.get(`${process.env.React_App_base_url}/admins?page=${value}&limit=10`, {
         headers:{
             Authorization : token
         }
@@ -34,6 +36,7 @@ export const listAdmin = createAsyncThunk('get/listAdmin', async (value,{ reject
 
     return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -44,13 +47,14 @@ export const listAdmin = createAsyncThunk('get/listAdmin', async (value,{ reject
 export const showAdmin = createAsyncThunk('get/showAdmin', async (value,{ rejectWithValue }) => {
     const token = localStorage.getItem('token')
     try {
-        const res = await axios.get(`/admins/${value}`, {
+        const res = await axios.get(`${process.env.React_App_base_url}/admins/${value}`, {
         headers:{
             Authorization : token
         }
     })
     return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -63,7 +67,7 @@ export const deleteAdmin = createAsyncThunk('delete/deleteAdmin', async (value,{
     const {id, props} = value
     console.log('id', id);
     try {
-        const res = await axios.delete(`/admins/${id}`, {
+        const res = await axios.delete(`${process.env.React_App_base_url}/admins/${id}`, {
         headers:{
             Authorization : token
         }
@@ -72,6 +76,7 @@ export const deleteAdmin = createAsyncThunk('delete/deleteAdmin', async (value,{
     return id
 
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -85,7 +90,7 @@ export const editAdmin = createAsyncThunk('put/editAdmin', async (values,{ rejec
 
 
     try {
-        const res = await axios.put(`/admins/${formData.id}`, formData ,{
+        const res = await axios.put(`${process.env.React_App_base_url}/admins/${formData.id}`, formData ,{
         headers:{
             Authorization : token
         }
@@ -95,6 +100,7 @@ export const editAdmin = createAsyncThunk('put/editAdmin', async (values,{ rejec
     return formData
 
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -106,7 +112,7 @@ export const filterAdmins = createAsyncThunk('get/filterAdmins', async (value,{ 
     const token = localStorage.getItem('token')
     // console.log(value);
     try {
-        const res = await axios.get(`http://23.21.204.21:8080/api/v1/admins?name=${value}`, {
+        const res = await axios.get(`${process.env.React_App_base_url}/admins?name=${value}`, {
         headers:{
             Authorization : token
         }
@@ -114,6 +120,7 @@ export const filterAdmins = createAsyncThunk('get/filterAdmins', async (value,{ 
 
     return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -124,7 +131,7 @@ export const filterAdmins = createAsyncThunk('get/filterAdmins', async (value,{ 
 const adminSlice = createSlice({
     name:'admin',
     initialState:{
-        loading:false,
+        loading:true,
         data:[],
         meta:{},
         oneData:{},
@@ -133,7 +140,12 @@ const adminSlice = createSlice({
         hasNext:true,
         hasPrev:false
     },
-    reducers:{},
+    reducers:{
+        resetAdmins:(state)=>{
+            state.data = []
+            // console.log("red",state.data);
+        }
+    },
     extraReducers:{
         [createAdmin.pending]:(state)=>{
             state.loading = true
@@ -141,12 +153,23 @@ const adminSlice = createSlice({
         [createAdmin.fulfilled] : (state, action) => {
             state.loading = false
             state.data = [...state.data, action.payload]
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Successfully Created',
+                showConfirmButton: false,
+                timer: 1500
+              })
             // console.log('full',action);
         },
         [createAdmin.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
-            console.log('err', action.payload.message);
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })    
+            console.log('err', action);
         },
         [listAdmin.pending]:(state)=>{
             state.loading = true
@@ -155,16 +178,21 @@ const adminSlice = createSlice({
             state.loading = false
             if(action.payload.data.length>1){
                 state.data = [...state.data, ...action.payload.data]
-                state.meta = {...action.payload.meta}   
+                state.meta = {...action.payload.meta} 
+                 
             }
             state.hasPrev = action.payload.meta.pagination.hasPrev
             state.hasNext = action.payload.meta.pagination.hasNext
-            console.log('full',action);
+            // console.log('full',action);
         },
         [listAdmin.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
-            console.log('err', action);
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
+            // console.log('err', action);
         },
         [showAdmin.pending]:(state)=>{
             state.loading = true
@@ -177,6 +205,10 @@ const adminSlice = createSlice({
         [showAdmin.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
             // console.log('err', action);
         },
         [deleteAdmin.pending]:(state)=>{
@@ -192,6 +224,10 @@ const adminSlice = createSlice({
         [deleteAdmin.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
             // console.log('err', action);
         },
         [editAdmin.pending]:(state)=>{
@@ -206,12 +242,23 @@ const adminSlice = createSlice({
                     return {...admin}
                 }
             })
-            console.log('full',action);
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Successfully updated',
+                showConfirmButton: false,
+                timer: 1500
+              })
+            // console.log('full',action);
         },
         [editAdmin.rejected]: (state, action)=>{
             state.loading = false
-            // state.errors = action.payload.message
-            console.log('err', action);
+            state.errors = action.payload.message
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
+            // console.log('err', action);
         },
         [filterAdmins.pending]:(state)=>{
             state.loading = true
@@ -223,9 +270,15 @@ const adminSlice = createSlice({
         [filterAdmins.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
-            console.log('err', action);
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
+            // console.log('err', action);
         },
     }
 })
+
+export const {resetAdmins} = adminSlice.actions
 
 export default adminSlice.reducer

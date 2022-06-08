@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button, Row, Col } from "react-bootstrap";
@@ -9,8 +9,6 @@ const AdminForm = (props) => {
 
     // console.log(props);
   const dispatch = useDispatch();
-
-  const errors = useSelector((state) => state.admin.errors);
 
   const initialValues = {
     firstName: "",
@@ -79,7 +77,6 @@ const AdminForm = (props) => {
         >
             <Form>
             <div>
-                <b style={{color:'red'}}>{errors}</b>
                 <Row className="mt-2">
                     <Col>
                     <label className="mb-2"><b>FirstName</b> <b style={{color:'red'}}>*</b></label>

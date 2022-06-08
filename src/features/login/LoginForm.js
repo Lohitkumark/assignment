@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { userLogin } from "./user";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { Button } from "react-bootstrap";
 
 const LoginForm = (props) => {
   
@@ -68,7 +69,7 @@ const LoginForm = (props) => {
               <ErrorMessage name="password" />
             </div>
             <br />
-            <button type="submit">Login</button>
+            <Button type="submit">Login</Button>
           </div>
         </Form>
       </Formik>

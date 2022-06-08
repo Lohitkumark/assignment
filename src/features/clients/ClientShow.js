@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Card, Container, Row, Col, ListGroup, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteClient, editClient, showClient } from "./clients";
+import { deleteClient, showClient } from "./clients";
+import Swal from "sweetalert2";
 
 const ClientShow = (props) => {
   const client = useSelector((state) => state.client.oneData);
@@ -19,12 +20,25 @@ const ClientShow = (props) => {
   }, [id]);
 
   const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are You Sure?",
+      text:"Your data will be deleted",
+      icon:"warning",
+      showCancelButton:true,
+      confirmButtonColor :"#3085d6",
+      cancelButtonColor:"#d33",
+      confirmButtonText:"Delete"
+    }).then((result)=>{
+      if(result.isConfirmed){
+        Swal.fire("Successfully deleted")
     const values = {
       id,
       props,
     };
     // console.log(id);
     dispatch(deleteClient(values));
+  }
+})
   };
 
   return (

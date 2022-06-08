@@ -8,7 +8,7 @@ const AdminEdit = (props) => {
 
   return (
     <div className='edit'>
-        <Card className="mt-4">
+        <Card className="mt-4 mb-4">
           <Card.Header style={{textAlign:'center'}}>
             <h1>EDIT ADMIN</h1>
           </Card.Header>

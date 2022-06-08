@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button, Row, Col } from "react-bootstrap";
 import { editAdmin, showAdmin } from "./admin";
+import Swal from "sweetalert2";
 
 const AdminEditForm = (props) => {
 
@@ -33,6 +34,20 @@ const AdminEditForm = (props) => {
     
   };
 
+  const handleCancel = () =>{
+    Swal.fire({
+        title: "Are You Sure?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ok",
+      }).then((result) => {
+        if (result.isConfirmed) {
+            props.history.push(`/admins/show/${id}`)
+        }
+    })
+  }
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
@@ -247,7 +262,7 @@ const AdminEditForm = (props) => {
                 <Button type="submit" size="sm" className="mt-2" style={{float:'right'}}>
                 Save
                 </Button>
-                <Button size="sm" className="mt-2" onClick={()=>{props.history.push(`/admins/show/${id}`)}}>
+                <Button size="sm" className="mt-2" onClick={handleCancel}>
                 Cancel
                 </Button>
           </div>

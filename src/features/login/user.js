@@ -1,18 +1,20 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export const userLogin = createAsyncThunk('post/adminLogin', async (values,{ rejectWithValue })=>{
     const {formData, onSubmitProps, props} = values
     // console.log(values);
     try {
-        const res = await axios.post('http://23.21.204.21:8080/api/v1/auth/login', formData)
+        const res = await axios.post(`${process.env.React_App_base_url}/auth/login`, formData)
         localStorage.setItem('token', res.data.token)
         onSubmitProps.resetForm()
-        props.history.push('/S')
+        props.history.push('/')
         props.handleAuth()
         // console.log(res);
       return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
             throw err
             }
@@ -36,7 +38,8 @@ const userSlice = createSlice({
         [userLogin.fulfilled]:(state, action)=>{
             state.loading = false
             state.data = {...action.payload}
-            console.log(action.payload);
+            Swal.fire('Successfully Logged In')
+            // console.log(action.payload);
         },
         [userLogin.rejected]:(state, action)=>{
             state.loading = false

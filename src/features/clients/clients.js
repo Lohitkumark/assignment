@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from '../../app/axios'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export const createClient = createAsyncThunk('post/createClien', async (values, { rejectWithValue }) => {
     const token = localStorage.getItem('token')
     const {formData, onSubmitProps, props} = values
     // console.log('create',formData);
     try {
-        const res = await axios.post('/clients', formData, {
+        const res = await axios.post(`${process.env.React_App_base_url}/clients`, formData, {
         headers:{
             Authorization : token
         }
@@ -16,6 +17,7 @@ export const createClient = createAsyncThunk('post/createClien', async (values, 
 
     return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -26,13 +28,14 @@ export const createClient = createAsyncThunk('post/createClien', async (values, 
 export const listClient = createAsyncThunk('get/listClient', async (value,{ rejectWithValue }) => {
     const token = localStorage.getItem('token')
     try {
-        const res = await axios.get(`/clients?page=${value}&limit=10`, {
+        const res = await axios.get(`${process.env.React_App_base_url}/clients?page=${value}&limit=10`, {
         headers:{
             Authorization : token
         }
     })
     return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -43,13 +46,14 @@ export const listClient = createAsyncThunk('get/listClient', async (value,{ reje
 export const showClient = createAsyncThunk('get/showClient', async (value,{ rejectWithValue }) => {
     const token = localStorage.getItem('token')
     try {
-        const res = await axios.get(`/clients/${value}`, {
+        const res = await axios.get(`${process.env.React_App_base_url}/clients/${value}`, {
         headers:{
             Authorization : token
         }
     })
     return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -62,7 +66,7 @@ export const deleteClient = createAsyncThunk('delete/deleteClient', async (value
     const {id, props} = value
     console.log('id', id);
     try {
-        const res = await axios.delete(`/clients/${id}`, {
+        const res = await axios.delete(`${process.env.React_App_base_url}/clients/${id}`, {
         headers:{
             Authorization : token
         }
@@ -71,6 +75,7 @@ export const deleteClient = createAsyncThunk('delete/deleteClient', async (value
     return id
 
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -84,7 +89,7 @@ export const editClient = createAsyncThunk('put/editClient', async (values,{ rej
 
 
     try {
-        const res = await axios.put(`/clients/${formData.id}`, formData ,{
+        const res = await axios.put(`${process.env.React_App_base_url}/clients/${formData.id}`, formData ,{
         headers:{
             Authorization : token
         }
@@ -94,6 +99,7 @@ export const editClient = createAsyncThunk('put/editClient', async (values,{ rej
     return formData
 
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -105,7 +111,7 @@ export const filterClients = createAsyncThunk('get/filterClients', async (value,
     const token = localStorage.getItem('token')
     // console.log(value);
     try {
-        const res = await axios.get(`/clients?name=${value}`, {
+        const res = await axios.get(`${process.env.React_App_base_url}/clients?name=${value}`, {
         headers:{
             Authorization : token
         }
@@ -113,6 +119,7 @@ export const filterClients = createAsyncThunk('get/filterClients', async (value,
 
     return res.data
     } catch (err) {
+        Swal.fire(err.message)
         if(!err.response){
         throw err
         }
@@ -131,7 +138,12 @@ const clientSlice = createSlice({
         filter:[],
         hasNext:true
     },
-    reducers:{},
+    reducers:{
+        resetClients:(state)=>{
+            state.data = []
+            // console.log("red",state.data);
+        }
+    },
     extraReducers:{
         [createClient.pending]:(state)=>{
             state.loading = true
@@ -139,12 +151,23 @@ const clientSlice = createSlice({
         [createClient.fulfilled] : (state, action) => {
             state.loading = false
             state.data = [...state.data, action.payload]
-            console.log('full',action);
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Successfully Created',
+                showConfirmButton: false,
+                timer: 1500
+              })
+            // console.log('full',action);
         },
         [createClient.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
-            console.log('err', action);
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
+            // console.log('err', action);
         },
         [listClient.pending]:(state)=>{
             state.loading = true
@@ -162,7 +185,11 @@ const clientSlice = createSlice({
         [listClient.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
-            console.log('err', action);
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
+            // console.log('err', action);
         },
         [showClient.pending]:(state)=>{
             state.loading = true
@@ -175,6 +202,10 @@ const clientSlice = createSlice({
         [showClient.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
             // console.log('err', action);
         },
         [deleteClient.pending]:(state)=>{
@@ -190,6 +221,10 @@ const clientSlice = createSlice({
         [deleteClient.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
             // console.log('err', action);
         },
         [editClient.pending]:(state)=>{
@@ -204,11 +239,22 @@ const clientSlice = createSlice({
                     return {...client}
                 }
             })
-            console.log('full',action);
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Successfully updated',
+                showConfirmButton: false,
+                timer: 1500
+              })
+            // console.log('full',action);
         },
         [editClient.rejected]: (state, action)=>{
             state.loading = false
-            // state.errors = action.payload.message
+            state.errors = action.payload.message
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
             console.log('err', action);
         },
         [filterClients.pending]:(state)=>{
@@ -221,9 +267,15 @@ const clientSlice = createSlice({
         [filterClients.rejected]: (state, action)=>{
             state.loading = false
             state.errors = action.payload.message
-            console.log('err', action);
+            Swal.fire({
+                icon: 'error',
+                title: action.payload.message
+              })
+            // console.log('err', action);
         },
     }
 })
+
+export const {resetClients} = clientSlice.actions
 
 export default clientSlice.reducer

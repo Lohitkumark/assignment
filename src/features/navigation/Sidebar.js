@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Button } from "react-bootstrap";
-import { Link, Route } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 const Sidebar = (props) => {
   const [inactive, setInactive] = useState(false);

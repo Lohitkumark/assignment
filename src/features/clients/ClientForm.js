@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Formik, Form, Field, ErrorMessage, Switch } from "formik";
+import React from "react";
+import { useSelector} from "react-redux";
+import { Formik, Form, Field, ErrorMessage} from "formik";
 import * as Yup from "yup";
 import { Button, Row, Col } from "react-bootstrap";
-import { createClient } from "./clients";
 
 const ClientForm = (props) => {
   console.log(props);
-  const dispatch = useDispatch();
+ 
 
   const errors = useSelector((state) => state.client.errors);
 
@@ -474,7 +473,7 @@ const ClientForm = (props) => {
               </Row>
             </div>
             <Button type="submit" size="sm" className="mt-2">
-              Create
+              Save
             </Button>
           </div>
         </Form>

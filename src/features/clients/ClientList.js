@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Form, Card, Container, ListGroup, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { filterClients, listClient, resetClients } from "./clients";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const ClientList = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("");
 
   const dispatch = useDispatch();
 
@@ -18,36 +18,35 @@ const ClientList = (props) => {
   // console.log(listClients);
 
   const filter = useSelector((state) => {
-    return state.client.filter
+    return state.client.filter;
   });
 
-  const hasNext = useSelector((state)=>{
-    return state.client.hasNext
-  })
+  const hasNext = useSelector((state) => {
+    return state.client.hasNext;
+  });
 
-  useEffect(()=>{
-    dispatch(resetClients())
-  },[])
+  useEffect(() => {
+    dispatch(resetClients());
+  }, []);
 
-  useEffect(()=>{
-      dispatch(listClient(pageNumber))
-  },[ pageNumber])
- 
+  useEffect(() => {
+    dispatch(listClient(pageNumber));
+  }, [pageNumber]);
+
   const fetchData = () => {
-    if(hasNext){
-      setPageNumber(pageNumber+1) 
-      listClient(pageNumber)
+    if (hasNext) {
+      setPageNumber(pageNumber + 1);
+      listClient(pageNumber);
     }
   };
 
   const handleSearchChange = (e) => {
-    const input = e.target.value
-    setSearch(input)
-    if(input.length>0){
-      dispatch(filterClients(input))
+    const input = e.target.value;
+    setSearch(input);
+    if (input.length > 0) {
+      dispatch(filterClients(input));
     }
-  }
-
+  };
 
   return (
     <div className="list">
@@ -80,14 +79,14 @@ const ClientList = (props) => {
                   </p>
                 }
               >
-                {(search.length>0? filter:listClients).map((ele) => {
+                {(search.length > 0 ? filter : listClients).map((ele) => {
                   return (
-                  <ListGroup.Item key={ele.id}>
-                    <Link className="items" to={`/clients/show/${ele.id}`} >
-                      {ele.firstName} {ele.lastName}
-                    </Link>
-                  </ListGroup.Item>
-                  )
+                    <ListGroup.Item key={ele.id}>
+                      <Link className="items" to={`/clients/show/${ele.id}`}>
+                        {ele.firstName} {ele.lastName}
+                      </Link>
+                    </ListGroup.Item>
+                  );
                 })}
               </InfiniteScroll>
             </ListGroup>
